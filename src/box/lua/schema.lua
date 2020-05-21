@@ -1809,14 +1809,25 @@ function box.schema.space.bless(space)
     end
 end
 
+-- Helper function to check sequnce:method() usage
+local function check_sequence_arg(seq, method)
+    if type(seq) ~= 'table' or seq.id == nil then
+        local fmt = 'Use sequence:%s(...) instead of sequence.%s(...)'
+        error(string.format(fmt, method, method))
+    end
+end
+
 local sequence_mt = {}
 sequence_mt.__index = sequence_mt
 
 sequence_mt.next = function(self)
+    check_sequence_arg(self, 'next')
     return internal.sequence.next(self.id)
 end
 
 sequence_mt.current = function(self)
+    check_sequence_arg(self, 'current')
+
     local ai64 = buffer.reg1.ai64
     local rc = builtin.box_sequence_current(self.id, ai64)
     if rc < 0 then
@@ -1826,18 +1837,26 @@ sequence_mt.current = function(self)
 end
 
 sequence_mt.set = function(self, value)
+    check_sequence_arg(self, 'set')
+
     return internal.sequence.set(self.id, value)
 end
 
 sequence_mt.reset = function(self)
+    check_sequence_arg(self, 'reset')
+
     return internal.sequence.reset(self.id)
 end
 
 sequence_mt.alter = function(self, opts)
+    check_sequence_arg(self, 'alter')
+
     box.schema.sequence.alter(self.id, opts)
 end
 
 sequence_mt.drop = function(self)
+    check_sequence_arg(self, 'drop')
+
     box.schema.sequence.drop(self.id)
 end
 

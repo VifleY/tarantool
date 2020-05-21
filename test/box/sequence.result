@@ -2379,3 +2379,33 @@ sq:current()
 sq:drop()
 ---
 ...
+--
+-- gh-4754: throw error similar to space.method() error
+-- Ex: 'Use sequence:next(...) instead of sequence.next(...)'
+--
+sq = box.schema.sequence.create('test')
+---
+...
+sq.next()
+---
+- error: 'builtin/box/schema.lua:1816: Use sequence:next(...) instead of sequence.next(...)'
+...
+sq.current()
+---
+- error: 'builtin/box/schema.lua:1816: Use sequence:current(...) instead of sequence.current(...)'
+...
+sq.set()
+---
+- error: 'builtin/box/schema.lua:1816: Use sequence:set(...) instead of sequence.set(...)'
+...
+sq.reset()
+---
+- error: 'builtin/box/schema.lua:1816: Use sequence:reset(...) instead of sequence.reset(...)'
+...
+sq.drop()
+---
+- error: 'builtin/box/schema.lua:1816: Use sequence:drop(...) instead of sequence.drop(...)'
+...
+sq:drop()
+---
+...

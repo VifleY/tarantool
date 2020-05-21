@@ -812,3 +812,15 @@ sq:current()
 sq:reset()
 sq:current()
 sq:drop()
+
+--
+-- gh-4754: throw error similar to space.method() error
+-- Ex: 'Use sequence:next(...) instead of sequence.next(...)'
+--
+sq = box.schema.sequence.create('test')
+sq.next()
+sq.current()
+sq.set()
+sq.reset()
+sq.drop()
+sq:drop()
