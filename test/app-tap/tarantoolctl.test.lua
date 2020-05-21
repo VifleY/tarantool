@@ -465,12 +465,9 @@ else
     local remote_path = create_script(dir, 'remote.lua', remote_code)
     test_run:cmd(("create server remote with script='%s'"):format(remote_path))
     test_run:cmd("start server remote")
-    local port = tonumber(
-        test_run:eval("remote",
-                      "return require('uri').parse(box.cfg.listen).service")[1]
-    )
+    local admin_socket = test_run:eval("remote", "return box.cfg.listen")[1]
 
-    local command_base = ('tarantoolctl play localhost:%d filler/00000000000000000000.xlog'):format(port)
+    local command_base = ('tarantoolctl play %s filler/00000000000000000000.xlog'):format(admin_socket)
 
     local status, err = pcall(function()
         test:test("fill and test play output", function(test_i)
